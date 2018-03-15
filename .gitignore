@@ -7,4 +7,8 @@
 *.log
 *.obj
 *.pch
-*.tlog *.idb *.vcxproj *.filters *.ipch 
+*.tlog 
+*.idb 
+*.vcxproj 
+*.filters 
+*.ipch 
