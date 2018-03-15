@@ -1,4 +1,4 @@
-// hw1_e14023056.cpp : 定義主控台應用程式的進入點。
+// hw1_e14023056.cpp : 
 //
 
 #include "stdafx.h"
@@ -10,7 +10,7 @@ using namespace std;
 int main()
 {
 	clock_t tic, toc; //time_start and time_end
-	int N = 100000000; // 1e8
+	int N = 1000000000; // 1e9
 	double T0, T1, T2, T3;
 
 	tic = clock();
@@ -39,11 +39,13 @@ int main()
 	printf("(a,b) = (%f , %f) \n\n", a, b);
 
 	// time for running multiplication
+	a = 6.547564, b = 1.55448;
+
 	for (int i = 0; i < N; i++)
 	{
 		a = b / c;
 		b = a / b;
-		c = a / b;
+		c = a * b;
 	}
 	toc = clock();
 	T2 = (toc - tic) / (double)(CLOCKS_PER_SEC);
@@ -51,6 +53,7 @@ int main()
 	printf("(a,b) = (%f , %f) \n\n", a, b);
 
 	// time for calculating sin
+	a = 2.547564, b = 4.55448;
 	tic = clock();
 	for (int i = 0; i < N; i++)
 	{
