@@ -12,3 +12,8 @@
 *.vcxproj 
 *.filters 
 *.ipch 
+*.JPG
+*.sln
+*.tlog
+*.user
+*.zip
