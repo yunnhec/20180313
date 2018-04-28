@@ -35,7 +35,7 @@ private:
 	int tempdata;
 	Node* tmp;
 	Node* first, *end;
-	Node* now;
+	//Node* now;
 	int length=0,ncase=0; //number of data
 };
 
@@ -185,14 +185,14 @@ void QuickSort::swap(Node*& m, Node*& n)
 
 void QuickSort::print()
 {
-	now = first;
+	tmp = first;
 	do{
-		ofs << now->data << " ";
-		cout << now->data << " ";
-		now = now->next;
-	} while (now != NULL);
+		ofs << tmp->data << " ";
+		cout << tmp->data << " ";
+		tmp = tmp->next;
+	} while (tmp != NULL);
 	cout << endl;
-	
+	/*
 	now = end;
 	do{
 		ofs << now->data << " ";
@@ -200,7 +200,7 @@ void QuickSort::print()
 		now = now->prev;
 	} while (now != NULL);
 	cout << endl;
-	ofs << endl;
+	ofs << endl;*/
 }
 
 int QuickSort::result(){
