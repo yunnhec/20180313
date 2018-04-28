@@ -25,6 +25,7 @@ public:
 	void swap(Node*& a, Node*& b);
 	void print();
 	void sort(Node*& p, int nnr, int nnl);
+	Node *Pivot(Node*& l, Node*& r);
 	void QuickMedian();
 	int result();
 private:
@@ -144,15 +145,14 @@ void QuickSort::QuickMedian(){
 	cout << pivot->data << endl;
 	cout << endl;
 	print();
-	//-------------------------------------------
-	while (nl == length || nr ==1)
+	/*while (nl == length || nr ==1)
 	{
 		if (nr > length/2){
-			
-			sort(pivot, nr, nl); //nl
+			//-------------------------------------------
+			sort(pivot, nr, nl); //nl ch
 		}
 		else{
-			sort(pivot, nr, nl);
+
 		}
 		//-------------------------------------------
 		//cout << "nr = " << nr << endl;
@@ -173,7 +173,7 @@ void QuickSort::QuickMedian(){
 			continue;
 		}
 		break;
-	}
+	}*/
 }
 
 void QuickSort::swap(Node*& m, Node*& n)
@@ -192,7 +192,7 @@ void QuickSort::print()
 		now = now->next;
 	} while (now != NULL);
 	cout << endl;
-	/*
+	
 	now = end;
 	do{
 		ofs << now->data << " ";
@@ -200,7 +200,7 @@ void QuickSort::print()
 		now = now->prev;
 	} while (now != NULL);
 	cout << endl;
-	ofs << endl;*/
+	ofs << endl;
 }
 
 int QuickSort::result(){
@@ -221,9 +221,9 @@ int main()
 	cout << endl;
 	cout << endl;
 	cout << endl;
-	test.QuickMedian();
-	test.print();
-	cout << test.result() << endl;
+	//test.QuickMedian();
+	//test.print();
+	//cout << test.result() << endl;
 	system("pause");
 	return 0;
 }
