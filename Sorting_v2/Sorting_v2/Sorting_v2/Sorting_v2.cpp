@@ -24,8 +24,8 @@ public:
 	void print_list();
 private:
 	int ncase, tempdata;
-	int length;
-	Node *first, *end, *tmp, *now;
+	int length=0;
+	Node *first, *end, *tmp;
 };
 
 void Sort::assign(Node*& cur, Node*& last, int a){
@@ -50,8 +50,7 @@ void Sort::getdata(){
 			length++;
 			if (first == NULL){
 				Node *now = new Node;
-				//assign(now, tmp, tempdata);
-
+				assign(now, tmp, tempdata);
 				first = now;
 				tmp = now;
 			}
@@ -77,12 +76,12 @@ void Sort::getdata(){
 }
 
 void Sort::print_list(){
-	Node *p = first;
+	tmp = first;
 	do{
 		//ofs << tmp->data << " ";
-		cout << p->data << " ";
-		p = p->next;
-	} while (p != NULL);
+		cout << tmp->data << " ";
+		tmp = tmp->next;
+	} while (tmp != NULL);
 	cout << endl;
 }
 
