@@ -18,7 +18,6 @@ struct Node
 	struct Node *prev;
 };
 
-
 class Sort{
 public:
 	void getdataL();
@@ -227,7 +226,6 @@ int Sort::sortA(int *p, int range_L, int range_R){
 		else //pivot在數列左邊->取右半
 			sortA(dataarray, pivot + 1, tmpR);
 	}
-	
 }
 
 double Sort::MedianA(){
@@ -271,12 +269,14 @@ int main()
 {
 	Sort test;
 	cout << "Input data: " << endl;
+	ofs << "Input data: " << endl;
 	test.getdataA();
 	test.print_array();
 	cout << endl;
+	ofs << endl;
 	test.MedianA();
-	test.print_array();
 	cout << "Median = " << test.MedianA() << endl;
+	ofs << "Median = " << test.MedianA() << endl;
 	system("pause");
 	return 0;
 }
