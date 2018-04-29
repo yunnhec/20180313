@@ -29,16 +29,16 @@ public:
 	Node* SelectionL(Node*& n1, Node*& n2, Node*& n3);
 	Node *FindI(Node*& d, int index);
 	int SelectionA(int n1, int n2, int n3);
-	int MedianA();
+	double MedianA();
 	void swapA(int s1, int s2);
 	int sortA(int *p, int range_L, int range_R);
 private:
-	int tempdata, result = 0;
+	int tempdata;
+	double result = NULL;
 	int length=0;
 	int *dataarray = NULL;
 	Node *first, *end, *tmp, *med;
 	int iA = 0; //for array
-	const int sizeMax = 1001;
 };
 
 void Sort::assign(Node*& cur, Node*& last, int a){
@@ -55,7 +55,7 @@ Node* Sort::FindI(Node*& d,int index){
 }
 
 void Sort::getdataA(){
-	ifstream ifs("Input1.txt", ios::in);
+	ifstream ifs("Input.txt", ios::in);
 	if (!ifs)
 		cout << "Fail to open the input file." << endl;
 	else
@@ -64,7 +64,7 @@ void Sort::getdataA(){
 			iA++;
 	}
 	ifs.close();
-	ifstream ifs2("Input1.txt", ios::in);
+	ifstream ifs2("Input.txt", ios::in);
 	if (!ifs2)
 		cout << "Fail to open the input file." << endl;
 	else
@@ -82,7 +82,7 @@ void Sort::getdataA(){
 }
 
 void Sort::getdataL(){
-	ifstream ifs("Input1.txt", ios::in);
+	ifstream ifs("Input.txt", ios::in);
 	if (!ifs)
 		cout << "Fail to open the input file." << endl;
 	else
@@ -173,8 +173,7 @@ void Sort::swapA(int s1, int s2){
 
 int Sort::sortA(int *p, int range_L, int range_R){
 	//choose a pivot
-	int pivot = SelectionA(range_L, (range_R - range_L) / 2, range_R);
-	cout << "pivot_index = " << pivot << endl;
+	int pivot = SelectionA(range_L, range_L+(range_R - range_L) / 2, range_R);
 	int left, right,selCase;
 	if (pivot == range_L){
 		left = range_L+1;
@@ -202,9 +201,7 @@ int Sort::sortA(int *p, int range_L, int range_R){
 		while (right>range_L && dataarray[pivot] <= dataarray[right])
 			right--;
 		if (left >= right) break;
-		cout << "left = " << left << " ,right = " << right << endl;
 		swapA(left, right);
-		print_array();
 	}
 	if (selCase){
 		swapA(pivot, left);
@@ -214,36 +211,39 @@ int Sort::sortA(int *p, int range_L, int range_R){
 		swapA(pivot, right);
 		pivot = right;
 	}
-	swapA(pivot, left);
-	cout << "left = " << left << " ,right = " << right << endl;
-	print_array();
-	cout << endl;
-	//σ納计
-	if (pivot == iA / 2)
-		return pivot;
-	else if (pivot > iA / 2) {  //pivot计娩->オ
-		sortA(dataarray, tmpL, pivot - 1);
+	if ((iA & 1) == 1){ //odd
+		if (pivot == (iA) / 2)
+			return pivot;
+		else if (pivot > (iA) / 2) //pivot计娩->オ
+			sortA(dataarray, tmpL, pivot - 1);
+		else //pivot计オ娩->
+			sortA(dataarray, pivot + 1, tmpR);
 	}
-	else //pivot计オ娩->
-	{
-		sortA(dataarray, pivot + 1, tmpR);
+	else{//even
+		if (pivot == (iA-1) / 2)
+			return pivot;
+		else if (pivot > (iA-1) / 2) //pivot计娩->オ
+			sortA(dataarray, tmpL, pivot - 1);
+		else //pivot计オ娩->
+			sortA(dataarray, pivot + 1, tmpR);
 	}
-	//return pivot;
-	return 0;
+	
 }
 
-int Sort::MedianA(){
-	int p = sortA(dataarray, 0, iA - 1);
-	//絋粄pivot竚
-	if (p == iA / 2){
-		if ((iA & 1) == 1){ //odd
-			result = p;
-			return result;
+double Sort::MedianA(){
+	int p1 = sortA(dataarray, 0, iA - 1);
+	if ((iA & 1) == 0){ //even
+		int smallest=dataarray[p1+1];
+		for (int c = p1 + 1; c < iA; c++){
+			if (dataarray[c] < smallest)
+				smallest = dataarray[c];
 		}
-		else{ //even
-			int p2 = sortA(dataarray, 0, iA - 1);
-		}
+		result = (dataarray[p1]+smallest)/2.0;
 	}
+	else{ //odd
+		result = (double)dataarray[p1];
+	}
+	return result;
 }
 
  
@@ -270,15 +270,13 @@ void Sort::print_list(){
 int main()
 {
 	Sort test;
-	cout << "Array" << endl;
+	cout << "Input data: " << endl;
 	test.getdataA();
 	test.print_array();
-	cout << "Linked list" << endl;
-	test.getdataL();
-	test.print_list();
 	cout << endl;
 	test.MedianA();
-	//cout << "Median = " << test.MedianA() << endl;
+	test.print_array();
+	cout << "Median = " << test.MedianA() << endl;
 	system("pause");
 	return 0;
 }
