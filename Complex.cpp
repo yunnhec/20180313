@@ -1,7 +1,8 @@
+template<typename T>
 class Complex{
 private:
-  double real;
-  double imag;
+  T real;
+  T imag;
 public:
   Complex(double real=0.0, double imag=0.0)
             :m_real(real), m_imag(imag) { };/////////
