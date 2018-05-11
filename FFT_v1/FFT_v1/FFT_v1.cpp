@@ -4,22 +4,26 @@
 #include "stdafx.h"
 #include <Windows.h>
 #include <iostream>
-#include <math.h>
+#include <cmath>
 #include <fstream>
 #define DEBUG 0
 using namespace std;
+const int MaxNum = 10000000;//2147483647;
+const double M_PI = 3.14159265358979323846;
+//ofstream ofs("Output.txt", ios::out);
 
 struct Complex{
 	double Real = 0.0;
 	double Imag = 0.0;
 	void data(){
-		printf("%d + i%d", Real, Imag);
+		printf("%.4f + %.4fi", Real, Imag);
+		//ofs << Real << " + " << Imag << "i";
 	}
 };
 
 class FFT{
 private:
-	Complex A;
+	Complex *X;
 	int bitArray[100];
 	int checkArray[100];
 public:
@@ -30,29 +34,32 @@ public:
 	void ini_Array(int p2, int p3, int p5); //initialize bitArray and checkArray
 	void swap(Complex &a, Complex &b);
 	void test();
+	void printX(int num);
 };
 
 void FFT::test(){
-	//BitReverse(1, 1, 1);
-	Complex a;
-	a.Imag = 1.5;
-	a.Real = 1.2;
-	a.data();
+	BitReverse(1, 1, 1);
+	cout << endl;
+	printX(30);
+	cout << endl;
 }
 
 void FFT::ini_Array(int p2,int p3,int p5){
 	int i;
+	X = new Complex[MaxNum];
 	for (i = 0; i < p2; i++){
 		bitArray[i] = 1;
-		checkArray[i] = 0;
 	}
 	for (i = 0; i < p3; i++){
 		bitArray[i + p2] = 2;
-		checkArray[i] = 0;
 	}
 	for (i = 0; i < p5; i++){
 		bitArray[i + p2 + p3] = 4;
+	}
+	int n = pow(2, p2)*pow(3, p3)*pow(5, p5);
+	for (i = 0; i < n; i++){
 		checkArray[i] = 0;
+		X[i].Real = (double)i;
 	}
 }
 
@@ -60,17 +67,18 @@ int FFT::BitReverse(int pow2, int pow3, int pow5){
 	ini_Array(pow2, pow3, pow5);
 	int N = pow(2, pow2)*pow(3, pow3)*pow(5, pow5);
 	int sum = pow2 + pow3 + pow5;
-	int m, p, q, k, c=1;
+	int m, p, q, k, c = 1;
 	m = N / (bitArray[sum - c] + 1);
 	q = m;
 	for (p = 1; p<N - 1; ++p)
 	{
 		printf("%d -> %d\n", p, q);
-		if (checkArray[p] == 0 && checkArray[q]==0)
-		{
+		if (checkArray[p] == 0 || checkArray[q]==0){
 			//swap p and q
-			checkArray[p] = 1;
-			checkArray[q] = 1;
+			cout << "swap " << p << " and " << q << endl << endl;
+			swap(X[p], X[q]);
+			//checkArray[p] = 1;
+			//checkArray[q] = 1;
 		}
 		k = m;
 		while (q >= bitArray[sum - c] * k & k>0) {
@@ -160,18 +168,22 @@ int FFT::BitReverse5(int num5){
 
 void FFT::swap(Complex &a, Complex &b)
 {
-	Complex tmp;
-	tmp.Real = a.Real;
-	tmp.Imag = a.Imag;
-	a.Real = b.Real;
-	a.Imag = b.Imag;
-	b.Real = tmp.Real;
-	b.Imag = tmp.Imag;
+	Complex tmp = a;
+	a = b;
+	b = tmp;
+}
+
+void FFT::printX(int num){
+	for (int i = 0; i < num; i++){
+		X[i].data();
+		cout << endl;
+	}
 }
 
 int main()
 {
 	FFT t;
+	//t.BitReverse(2, 1, 0);
 	t.test();
 	cin.get();
 	return 0;
