@@ -27,14 +27,16 @@ private:
 	int bitArray[100];
 	int checkArray[100];
 public:
+	void ini_Array(int p2, int p3, int p5); //initialize bitArray and checkArray
+	void swap(Complex &a, Complex &b);
+	int BitReverse(int pow2, int pow3, int pow5);
+	void printX(int num); 
+	//
+	void test();
 	int BitReverse2(int num2);
 	int BitReverse3(int num3);
 	int BitReverse5(int num5);
-	int BitReverse(int pow2, int pow3, int pow5);
-	void ini_Array(int p2, int p3, int p5); //initialize bitArray and checkArray
-	void swap(Complex &a, Complex &b);
-	void test();
-	void printX(int num);
+
 };
 
 void FFT::test(){
@@ -57,10 +59,7 @@ void FFT::ini_Array(int p2,int p3,int p5){
 		bitArray[i + p2 + p3] = 4;
 	}
 	int n = pow(2, p2)*pow(3, p3)*pow(5, p5);
-	for (i = 0; i < n; i++){
-		checkArray[i] = 0;
-		X[i].Real = (double)i;
-	}
+	X[n-1].Real = (double)(n-1)*1.0;
 }
 
 int FFT::BitReverse(int pow2, int pow3, int pow5){
@@ -73,13 +72,7 @@ int FFT::BitReverse(int pow2, int pow3, int pow5){
 	for (p = 1; p<N - 1; ++p)
 	{
 		printf("%d -> %d\n", p, q);
-		if (checkArray[p] == 0 || checkArray[q]==0){
-			//swap p and q
-			cout << "swap " << p << " and " << q << endl << endl;
-			swap(X[p], X[q]);
-			//checkArray[p] = 1;
-			//checkArray[q] = 1;
-		}
+		X[p].Real = q*1.0;
 		k = m;
 		while (q >= bitArray[sum - c] * k & k>0) {
 			q = q - bitArray[sum - c] * k;
@@ -183,7 +176,6 @@ void FFT::printX(int num){
 int main()
 {
 	FFT t;
-	//t.BitReverse(2, 1, 0);
 	t.test();
 	cin.get();
 	return 0;

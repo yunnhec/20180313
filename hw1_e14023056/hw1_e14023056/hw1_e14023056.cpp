@@ -41,20 +41,20 @@ int **Matrix::buildMatrixA(int rowA, int columnA) {
 	size_Ac = columnA;
 
 	matrixA = new int*[size_Ar];
-	#pragma omp parallel for
+#pragma omp parallel for
 	for (i = 0; i < size_Ar; i++)
 	{
 		matrixA[i] = new int[size_Ac];
 	}
-	
-	#pragma omp parallel for
+
+#pragma omp parallel for
 	for (i = 0; i < size_Ar; i++)
 	{
-	#pragma omp parallel for
+#pragma omp parallel for
 		for (j = 0; j < size_Ac; j++)
 		{
-			matrixA[i][j] = rand()%10; //all values are in 0~10
-		}	
+			matrixA[i][j] = rand() % 10; //all values are in 0~10
+		}
 	}
 	return matrixA;
 }
@@ -65,18 +65,18 @@ int **Matrix::buildMatrixX(int columnX) {
 	size_Xc = columnX;
 
 	matrixX = new int*[size_Xr];
-	#pragma omp parallel for
+#pragma omp parallel for
 	for (i = 0; i < size_Xr; i++)
 	{
 		matrixX[i] = new int[size_Xc];
 	}
-	#pragma omp parallel for
+#pragma omp parallel for
 	for (i = 0; i < size_Xr; i++)
 	{
-		#pragma omp parallel for
+#pragma omp parallel for
 		for (j = 0; j < size_Xc; j++)
 		{
-			matrixX[i][j] = rand()%10; //all values are in 0~10
+			matrixX[i][j] = rand() % 10; //all values are in 0~10
 		}
 	}
 	return matrixX;
@@ -98,7 +98,7 @@ void Matrix::initialize2()
 
 int **Matrix::Multiplication_omp()
 {
-	#pragma omp parallel shared(matrixA,matrixB,matrixX) private(i,j,k)  
+#pragma omp parallel shared(matrixA,matrixB,matrixX) private(i,j,k)  
 	{
 #pragma omp for schedule(dynamic, 8)
 		for (i = 0; i < size_Ar; i++)
@@ -149,9 +149,9 @@ void Matrix::print()
 				ofs << matrixA[i][j] << "\t";
 			}
 			cout << endl;
-			ofs<< endl;
+			ofs << endl;
 		}
-		cout  << endl << "matrix X =" << endl;
+		cout << endl << "matrix X =" << endl;
 		ofs << "];" << endl << "X=[";
 		for (i = 0; i < size_Xr; i++)
 		{
@@ -243,16 +243,16 @@ int main()
 {
 	clock_t tic, toc;
 	double T0, T1, T2;
-	int ii, jj,kk;
+	int ii, jj, kk;
 	int row = 1000, column = 1000, column2 = 1;
 	int **A, **X, **B, **B2;
 	Matrix test;
 	ofname = "Result.txt";
 
 	tic = clock();
-	#pragma omp parallel private(i,j,k)  
+#pragma omp parallel private(i,j,k)  
 	{
-	#pragma omp for schedule(dynamic)  
+#pragma omp for schedule(dynamic)  
 		for (ii = 0; ii < row; ii++){
 			for (jj = 0; jj < column2; jj++){
 				for (kk = 0; kk < column; kk++){
@@ -264,10 +264,10 @@ int main()
 	T0 = (toc - tic) / (double)(CLOCKS_PER_SEC);
 
 	test.initialize();
-	A = test.buildMatrixA(row,column);
+	A = test.buildMatrixA(row, column);
 	X = test.buildMatrixX(column2);
 	test.initialize2();
-	
+
 	tic = clock();
 	B2 = test.Multiplication();
 	toc = clock();
@@ -279,8 +279,8 @@ int main()
 
 	//test.printfile();
 
-	printf("Operation time (without Omp) =\t %f\n",(T1 - T0));
-	printf("Operation time (with Omp) =\t %f\n",(T2 - T0));
+	printf("Operation time (without Omp) =\t %f\n", (T1 - T0));
+	printf("Operation time (with Omp) =\t %f\n", (T2 - T0));
 
 	test.release();
 	system("pause");
