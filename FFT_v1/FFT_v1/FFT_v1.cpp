@@ -26,27 +26,32 @@ private:
 	Complex *X;
 	int bitArray[100];
 	int checkArray[100];
+	int p2, p3, p5;
 public:
-	void ini_Array(int p2, int p3, int p5); //initialize bitArray and checkArray
+	void ini_Array(); //initialize bitArray and checkArray
 	void swap(Complex &a, Complex &b);
-	int BitReverse(int pow2, int pow3, int pow5);
+	void BitReverse();
+	void Butterfly();
 	void printX(int num); 
-	//
-	void test();
-	int BitReverse2(int num2);
-	int BitReverse3(int num3);
-	int BitReverse5(int num5);
-
+	void fft(int pow2, int pow3, int pow5);
 };
 
-void FFT::test(){
-	BitReverse(1, 1, 1);
+void FFT::fft(int pow2, int pow3, int pow5){
+	p2 = pow2;
+	p3 = pow3;
+	p5 = pow5;
+	BitReverse();
 	cout << endl;
-	printX(30);
+	int n = pow(2, pow2)*pow(3, pow3)*pow(5, pow5);
+	printX(n);
 	cout << endl;
 }
 
-void FFT::ini_Array(int p2,int p3,int p5){
+void FFT::Butterfly(){
+
+}
+
+void FFT::ini_Array(){
 	int i;
 	X = new Complex[MaxNum];
 	for (i = 0; i < p2; i++){
@@ -62,10 +67,10 @@ void FFT::ini_Array(int p2,int p3,int p5){
 	X[n-1].Real = (double)(n-1)*1.0;
 }
 
-int FFT::BitReverse(int pow2, int pow3, int pow5){
-	ini_Array(pow2, pow3, pow5);
-	int N = pow(2, pow2)*pow(3, pow3)*pow(5, pow5);
-	int sum = pow2 + pow3 + pow5;
+void FFT::BitReverse(){
+	ini_Array();
+	int N = pow(2, p2)*pow(3, p3)*pow(5, p5);
+	int sum = p2 + p3 + p5;
 	int m, p, q, k, c = 1;
 	m = N / (bitArray[sum - c] + 1);
 	q = m;
@@ -84,79 +89,14 @@ int FFT::BitReverse(int pow2, int pow3, int pow5){
 	}
 	if (DEBUG){
 		cout << endl << "DEBUG" << endl;
-		cout << "(P2, P3, P5) = " << pow2 << ", " << pow3 << ", " << pow5 << endl;
-		for (int i = 0; i < pow2 + pow3 + pow5; i++){
+		cout << "(P2, P3, P5) = " << p2 << ", " << p3 << ", " << p5 << endl;
+		for (int i = 0; i < p2 + p3 + p5; i++){
 			cout << bitArray[i] << " ";
 		}
 		cout << endl << "N = " << N << endl;
 		cout << "m = " << m << endl;
 		cout << "sum = " << sum << endl;
 	}
-	return 0;
-}
-
-int FFT::BitReverse2(int num2){
-	int m, p, q, k;
-	m = num2 / 2;                        // Bit-Reverse 每次要進位的數字 
-	q = m;							// p = 1, q = m (第一個要交換的) 
-	for (p = 1; p<num2 - 1; ++p)
-	{
-		printf("%d <-> %d\n", p, q);
-		if (p < q)
-		{
-			//swap p and q
-		}
-		k = m;						// k, 用來檢查第 log_2 k + 1 位是不是1 
-		while (q >= k & k > 0)		// q >=k 第 (log_2 k + 1)位是1,  
-		{
-			q = q - k;				// 1->0
-			k = k / 2;				// 檢查下一位 
-		}
-		q = q + k;
-	}
-	return 0;
-}
-
-int FFT::BitReverse3(int num3){
-	int m, p, q, k;
-	m = num3 / 3;
-	q = m;
-	for (p = 1; p < num3-1; p++){
-		printf("%d <-> %d\n", p, q);
-		if (p < q)
-		{
-			//swap p and q
-		}
-		k = m;
-		while (q >= 2*k & k > 0)		// q >=k 第 (log_3 k + 1)位是2,  
-		{
-			q = q - 2*k;				// 2->0
-			k = k / 3;				// 檢查下一位 
-		}
-		q = q + k;
-	}
-	return 0;
-}
-
-int FFT::BitReverse5(int num5){
-	int m, p, q, k;
-	m = num5 / 5;
-	q = m;
-	for (p = 1; p < num5 - 1; p++){
-		printf("%d <-> %d\n", p, q);
-		if (p < q)
-		{
-			//swap p and q
-		}
-		k = m;
-		while (q >= 4 * k & k > 0)		// q >=k 第 (log_5 k + 1)位是4,  
-		{
-			q = q - 4 * k;				// 4->0
-			k = k / 5;				// 檢查下一位 
-		}
-		q = q + k;
-	}
-	return 0;
 }
 
 void FFT::swap(Complex &a, Complex &b)
@@ -176,7 +116,7 @@ void FFT::printX(int num){
 int main()
 {
 	FFT t;
-	t.test();
+	t.fft(2,1,0);
 	cin.get();
 	return 0;
 }
