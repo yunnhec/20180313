@@ -6,10 +6,11 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
+#include <time.h>
 #define DEBUG 0
 using namespace std;
-const int MaxNum = 10000000;//2147483647;
-const double M_PI = 3.14159265358979323846;
+const int MaxNum = 100000000;//2147483647;
+const double M_PI = 3.141592653589;
 //ofstream ofs("Output.txt", ios::out);
 
 struct Complex{
@@ -24,15 +25,15 @@ struct Complex{
 class FFT{
 private:
 	Complex *X;
-	int bitArray[100];
-	int checkArray[100];
+	int bitArray[50];
 	int p2, p3, p5;
 public:
-	void ini_Array(); //initialize bitArray and checkArray
+	void ini_Array(); //initialize bitArray
 	void swap(Complex &a, Complex &b);
 	void BitReverse();
-	void Butterfly();
-	void printX(int num); 
+	void Butterfly2();
+	void Butterfly3();
+	void getX(); 
 	void fft(int pow2, int pow3, int pow5);
 };
 
@@ -41,30 +42,76 @@ void FFT::fft(int pow2, int pow3, int pow5){
 	p3 = pow3;
 	p5 = pow5;
 	BitReverse();
-	cout << endl;
-	int n = pow(2, pow2)*pow(3, pow3)*pow(5, pow5);
-	printX(n);
-	cout << endl;
 }
 
-void FFT::Butterfly(){
+void FFT::Butterfly2(){
+	int k, p, q, m = 1;
+	Complex w, w_N, tmp;
+	int N = pow(2, p2)*pow(3, p3)*pow(5, p5);
+	while (m <= N)
+	{
+		for (k = 0; k<m / 2; k++)
+		{
+			w.Real = cos(2.0*k*M_PI / m); // -????????? 
+			w.Imag = sin(2.0*k*M_PI / m);
+			for (p = k; p<N; p += m)
+			{
+				q = p + m / 2;
+				// (Complex)tmp = (Complex)w * (Complex)X[q]
+				tmp.Real = w.Real*X[q].Real - w.Imag*X[q].Imag;
+				tmp.Imag = w.Real*X[q].Imag + w.Imag*X[q].Real;
+				// (Complex)X[q] = (Complex)X[p] - (Complex)tmp
+				X[q].Real = X[p].Real - tmp.Real;
+				X[q].Imag = X[p].Imag - tmp.Imag;
+				// (Complex)X[p] = (Complex)X[p] + (Complex)tmp
+				X[p].Real += tmp.Real;
+				X[p].Imag += tmp.Imag;
+			}
+		}
+		m <<= 1; // m*=2;
+	}
+}
 
+void FFT::Butterfly3(){
+	int k, p, q, r, m = 1;
+	Complex w, w_N, tmp1, tmp2;
+	int N = pow(2, p2)*pow(3, p3)*pow(5, p5);
+	w_N.Real = cos(2.0*M_PI / 5);
+	w_N.Imag = sin(2.0*M_PI / 5);
+	while (m <= N)
+	{
+		for (k = 0; k<m / 3; k++)
+		{
+			w.Real = cos(2.0*k*M_PI / m);
+			w.Imag = sin(2.0*k*M_PI / m);
+			for (p = k; p<N; p += m)
+			{
+				q = p + m / 3;
+				r = q + m / 3;
+				// (Complex)tmp1 = (Complex)w * (Complex)X[q]
+				// (Complex)tmp2 = (Complex)w^2 * (Complex)X[r]
+
+				// (Complex)X[r] = (Complex)X[p] +...
+
+				// (Complex)X[q] = (Complex)X[p] +...
+
+				// (Complex)X[p] = (Complex)X[p] + (Complex)tmp1 + (Complex)tmp2
+				
+			}
+		}
+		m *=3;
+	}
 }
 
 void FFT::ini_Array(){
-	int i;
+	int i = 0;
 	X = new Complex[MaxNum];
-	for (i = 0; i < p2; i++){
+	for (i = 0; i < p2; i++)
 		bitArray[i] = 1;
-	}
-	for (i = 0; i < p3; i++){
+	for (i = 0; i < p3; i++)
 		bitArray[i + p2] = 2;
-	}
-	for (i = 0; i < p5; i++){
+	for (i = 0; i < p5; i++)
 		bitArray[i + p2 + p3] = 4;
-	}
-	int n = pow(2, p2)*pow(3, p3)*pow(5, p5);
-	X[n-1].Real = (double)(n-1)*1.0;
 }
 
 void FFT::BitReverse(){
@@ -76,7 +123,7 @@ void FFT::BitReverse(){
 	q = m;
 	for (p = 1; p<N - 1; ++p)
 	{
-		printf("%d -> %d\n", p, q);
+		//printf("%d -> %d\n", p, q);
 		X[p].Real = q*1.0;
 		k = m;
 		while (q >= bitArray[sum - c] * k & k>0) {
@@ -87,16 +134,7 @@ void FFT::BitReverse(){
 		c = 1;
 		q = q + k;
 	}
-	if (DEBUG){
-		cout << endl << "DEBUG" << endl;
-		cout << "(P2, P3, P5) = " << p2 << ", " << p3 << ", " << p5 << endl;
-		for (int i = 0; i < p2 + p3 + p5; i++){
-			cout << bitArray[i] << " ";
-		}
-		cout << endl << "N = " << N << endl;
-		cout << "m = " << m << endl;
-		cout << "sum = " << sum << endl;
-	}
+	X[N - 1].Real = (double)(N - 1)*1.0;
 }
 
 void FFT::swap(Complex &a, Complex &b)
@@ -106,8 +144,8 @@ void FFT::swap(Complex &a, Complex &b)
 	b = tmp;
 }
 
-void FFT::printX(int num){
-	for (int i = 0; i < num; i++){
+void FFT::getX(){
+	for (int i = 0; i < pow(2, p2)*pow(3, p3)*pow(5, p5); i++){
 		X[i].data();
 		cout << endl;
 	}
@@ -115,9 +153,19 @@ void FFT::printX(int num){
 
 int main()
 {
+	clock_t t1, t2;
 	FFT t;
-	t.fft(2,1,0);
-	cin.get();
+	cout << "BitReverse" << endl;
+	t1 = clock();
+	t.fft(4,0,0);
+	t2 = clock();
+	t.getX();
+	t.Butterfly2();
+	cout << "Butterfly" << endl;
+	t.getX();
+	printf("time = %f\n", (t2 - t1) / (double)(CLOCKS_PER_SEC));
+
+	system("pause");
 	return 0;
 }
 
