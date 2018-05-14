@@ -26,7 +26,7 @@ class FFT{
 private:
 	Complex *X;
 	int bitArray[50];
-	int p2, p3, p5;
+	int p2=0, p3=0, p5=0;
 public:
 	void ini_Array(); //initialize bitArray
 	void swap(Complex &a, Complex &b);
@@ -136,12 +136,12 @@ void FFT::Butterfly5(){
 	double theta = 2.0*M_PI / 5;
 	w_N.Real = cos(theta);
 	w_N.Imag = sin(theta);
-	w_2N.Real = cos(2 * theta);
-	w_2N.Imag = sin(2 * theta);
-	w_3N.Real = cos(3 * theta);
-	w_3N.Imag = sin(3 * theta);
-	w_4N.Real = cos(4 * theta);
-	w_4N.Imag = sin(4 * theta);
+	w_2N.Real = cos(2.0 * theta);
+	w_2N.Imag = sin(2.0 * theta);
+	w_3N.Real = cos(3.0 * theta);
+	w_3N.Imag = sin(3.0 * theta);
+	w_4N.Real = cos(4.0 * theta);
+	w_4N.Imag = sin(4.0 * theta);
 
 	while (m <= N)
 	{
@@ -192,7 +192,8 @@ void FFT::Butterfly5(){
 
 void FFT::ini_Array(){
 	int i = 0;
-	X = new Complex[MaxNum];
+	int sizen = pow(2, p2)*pow(3, p3)*pow(5, p5);
+	X = new Complex[sizen];
 	for (i = 0; i < p2; i++)
 		bitArray[i] = 1;
 	for (i = 0; i < p3; i++)
@@ -244,10 +245,10 @@ int main()
 	FFT t;
 	cout << "BitReverse" << endl;
 	t1 = clock();
-	t.fft(0,0,2);
+	t.fft(0,2,0);
 	t2 = clock();
-	t.getX();
-	t.Butterfly5();
+	//t.getX();
+	t.Butterfly3();
 	cout << "FFT" << endl;
 	t.getX();
 	printf("time = %f\n", (t2 - t1) / (double)(CLOCKS_PER_SEC));
