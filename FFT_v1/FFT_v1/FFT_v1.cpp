@@ -8,7 +8,6 @@
 #include <fstream>
 #include <time.h>
 using namespace std;
-const int MaxNum = 100000000;//2147483647;
 const double M_PI = 3.141592653589;
 //ofstream ofs("Results.txt", ios::out);
 
@@ -17,7 +16,6 @@ struct Complex{
 	double Imag = 0.0;
 	void data(){
 		printf("%.4f + %.4fi", Real, Imag);
-		//ofs << Real << " + " << Imag << "i";
 	}
 };
 
