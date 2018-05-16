@@ -7,6 +7,7 @@
 #include <cmath>
 #include <fstream>
 #include <time.h>
+#include <omp.h>
 using namespace std;
 const double M_PI = 3.141592653589;
 //ofstream ofs("Results.txt", ios::out);
@@ -22,8 +23,8 @@ struct Complex{
 class FFT{
 private:
 	Complex *X;
-	int bitArray[50];
-	int p2=0, p3=0, p5=0;
+	int *bitArray;
+	unsigned int p2 = 0, p3 = 0, p5 = 0;
 	void ini_Array(); //initialize bitArray
 	void BitReverse();
 	void Butterfly();
@@ -59,7 +60,7 @@ void FFT::fft(int pow2, int pow3, int pow5){
 }
 
 void FFT::Butterfly(){
-	int k, p, q, r, s, t, c, m=1;
+	int k, p, q, r, s, t, c, m = 1;
 	Complex w_N, w_2N, w_3N, w_4N, tmp1, tmp2, tmp3, tmp4;
 	int N = pow(2, p2)*pow(3, p3)*pow(5, p5);
 	double thetaN, theta;
@@ -77,6 +78,7 @@ void FFT::Butterfly(){
 		for (k = 0; k < m / 5; k++)
 		{
 			theta = -2.0*k*M_PI / m;
+//#pragma omp for num_threads(4)
 			for (p = k; p<N; p += m)
 			{
 				q = p + m / 5;
@@ -107,6 +109,7 @@ void FFT::Butterfly(){
 				// (Complex)X[t] = (Complex)X[p] + (Complex)tmp1*w_4N + (Complex)tmp2*w_3N + (Complex)tmp3*w_2N + (Complex)tmp4*w_N
 				X[t].Real = X[p].Real + (w_4N.Real*tmp1.Real - w_4N.Imag*tmp1.Imag) + (w_3N.Real*tmp2.Real - w_3N.Imag*tmp2.Imag) + (w_2N.Real*tmp3.Real - w_2N.Imag*tmp3.Imag) + (w_N.Real*tmp4.Real - w_N.Imag*tmp4.Imag);
 				X[t].Imag = X[p].Imag + (w_4N.Real*tmp1.Imag + w_4N.Imag*tmp1.Real) + (w_3N.Real*tmp2.Imag + w_3N.Imag*tmp2.Real) + (w_2N.Real*tmp3.Imag + w_2N.Imag*tmp3.Real) + (w_N.Real*tmp4.Imag + w_N.Imag*tmp4.Real);
+			
 				// (Complex)X[p] = (Complex)X[p] + (Complex)tmp1 + (Complex)tmp2
 				X[p].Real += tmp1.Real + tmp2.Real + tmp3.Real + tmp4.Real;
 				X[p].Imag += tmp1.Imag + tmp2.Imag + tmp3.Imag + tmp4.Imag;
@@ -123,6 +126,7 @@ void FFT::Butterfly(){
 		for (k = 0; k < m / 3; k++)
 		{
 			theta = -2.0*k*M_PI / m;
+//#pragma omp for num_threads(4)
 			for (p = k; p<N; p += m)
 			{
 				q = p + m / 3;
@@ -155,6 +159,7 @@ void FFT::Butterfly(){
 		for (k = 0; k < m / 2; k++)
 		{
 			theta = -2.0*k*M_PI / m;
+//#pragma omp for num_threads(4)
 			for (p = k; p<N; p += m)
 			{
 				q = p + m / 2;
@@ -175,6 +180,7 @@ void FFT::Butterfly(){
 void FFT::ini_Array(){
 	int i = 0;
 	int sizen = pow(2, p2)*pow(3, p3)*pow(5, p5);
+	bitArray = new int[p2 + p3 + p5];
 	X = new Complex[sizen];
 	for (i = 0; i < p2; i++)
 		bitArray[i] = 1;
@@ -191,6 +197,7 @@ void FFT::BitReverse(){
 	int m, p, q, k, c = 1;
 	m = N / (bitArray[sum - c] + 1);
 	q = m;
+//#pragma omp for num_threads(4)
 	for (p = 1; p<N - 1; ++p)
 	{
 		//printf("%d -> %d\n", p, q);
@@ -210,10 +217,20 @@ void FFT::BitReverse(){
 void FFT::getX(){
 	int i;
 	cout << "FFT of N = 0 ~ " << pow(2, p2)*pow(3, p3)*pow(5, p5) << endl;
+	
+	X[0].data();
+	cout << endl;
+	X[1].data();
+	cout << endl;
+	int nM = pow(2, p2)*pow(3, p3)*pow(5, p5) - 1;
+	X[nM].data();
+	cout << endl;
+	/*
 	for (i = 0; i < pow(2, p2)*pow(3, p3)*pow(5, p5); i++){
 		X[i].data();
 		cout << endl;
 	}
+	*/
 }
 
 int main()
@@ -221,7 +238,7 @@ int main()
 	clock_t t1, t2;
 	FFT t;
 	t1 = clock();
-	t.fft(1, 1, 1);
+	t.fft(25, 0, 0);
 	//t.fft2(360);
 	t2 = clock();
 	t.getX();
