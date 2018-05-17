@@ -22,9 +22,9 @@ struct Complex{
 
 class FFT{
 private:
-	Complex *X;
+	int p2 = 0, p3 = 0, p5 = 0;
 	int *bitArray;
-	unsigned int p2 = 0, p3 = 0, p5 = 0;
+	Complex *X;
 	void ini_Array(); //initialize bitArray
 	void BitReverse();
 	void Butterfly();
@@ -61,9 +61,9 @@ void FFT::fft(int pow2, int pow3, int pow5){
 
 void FFT::Butterfly(){
 	int k, p, q, r, s, t, c, m = 1;
-	Complex w_N, w_2N, w_3N, w_4N, tmp1, tmp2, tmp3, tmp4;
 	int N = pow(2, p2)*pow(3, p3)*pow(5, p5);
 	double thetaN, theta;
+	Complex w_N, w_2N, w_3N, w_4N, tmp1, tmp2, tmp3, tmp4;
 	for (c = 0; c < p5; c++){
 		m *= 5;
 		thetaN = -2.0*M_PI / 5;
@@ -192,9 +192,9 @@ void FFT::ini_Array(){
 
 void FFT::BitReverse(){
 	ini_Array();
+	int m, p, q, k, c = 1;
 	int N = pow(2, p2)*pow(3, p3)*pow(5, p5);
 	int sum = p2 + p3 + p5;
-	int m, p, q, k, c = 1;
 	m = N / (bitArray[sum - c] + 1);
 	q = m;
 //#pragma omp for num_threads(4)
