@@ -11,6 +11,7 @@ using namespace std;
 #include <iostream>
 #include <cmath>
 const double M_PI = 3.141592653589;
+#define BUG 1
 
 struct Complex{
 	double Real = 0.0;
@@ -56,8 +57,6 @@ void FFT::dst1(int Num){
 		p5++;
 		Num /= 5;
 	}
-	cout << "Num = " << Num << endl;
-	//if (Num % 2 == 0 && Num % 3 == 0 && Num % 5 == 0)
 	if (Num == 1)
 	{
 		BitReverse_dst();
@@ -65,6 +64,7 @@ void FFT::dst1(int Num){
 	}
 	else{
 		cout << "The input cannot be solved by this program." << endl;
+#define BUG 0
 	}
 }
 
@@ -82,8 +82,16 @@ void FFT::dct2(int Num){
 		Num /= 5;
 	}
 	p2 += 2;
-	BitReverse_dct();
-	Butterfly();
+	cout << Num << endl;
+	if (Num == 1)
+	{
+		BitReverse_dct();
+		Butterfly();
+	}
+	else{
+		cout << "The input cannot be solved by this program." << endl;
+#define BUG 0
+	}
 }
 
 void FFT::ini_ArrayX(){
@@ -376,9 +384,10 @@ void FFT::getX(){
 void FFT::getX_dct(){
 	int i;
 	cout << "DCT-II of N = 0 ~ " << pow(2, p2-2)*pow(3, p3)*pow(5, p5)-1 << endl;
-
-	for (i = 0; i < pow(2, p2-2)*pow(3, p3)*pow(5, p5); i++){
-		printf("%.4f\n", X[i].Real);
+	if (BUG){
+		for (i = 0; i < pow(2, p2 - 2)*pow(3, p3)*pow(5, p5); i++){
+			printf("%.4f\n", X[i].Real);
+		}
 	}
 	cout << endl;
 }
@@ -386,9 +395,10 @@ void FFT::getX_dct(){
 void FFT::getX_dst(){
 	int i;
 	cout << "DST-I of N = 0 ~ " << pow(2, p2)*pow(3, p3)*pow(5, p5)/2 - 1 << endl;
-
-	for (i = 1; i < pow(2, p2)*pow(3, p3)*pow(5, p5)/2; i++){
-		printf("%.4f\n", - X[i].Imag / 2.0);
+	if (BUG){
+		for (i = 1; i < pow(2, p2)*pow(3, p3)*pow(5, p5) / 2; i++){
+			printf("%.4f\n", -X[i].Imag / 2.0);
+		}
 	}
 	cout << endl;
 }
@@ -401,16 +411,16 @@ int main()
 	cout << "N = ";
 	cin >> input;
 	t1 = clock();
-	t.dst1(input);
-	//t.dct2(input);
+	//t.dst1(input);
+	t.dct2(input);
 	t2 = clock();
 	printf("time = %f\n", (t2 - t1) / (double)(CLOCKS_PER_SEC));
 	system("pause");
-	t.getX_dst();
-	//t.getX_dct();
+	//t.getX_dst();
+	t.getX_dct();
 	system("pause");
-	t.dst1_def(input);
-	//t.dct2_def(input);
+	//t.dst1_def(input);
+	t.dct2_def(input);
 	system("pause");
 	return 0;
 }
