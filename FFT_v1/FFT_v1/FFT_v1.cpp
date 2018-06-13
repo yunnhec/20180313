@@ -402,12 +402,15 @@ int main()
 	cin >> input;
 	t1 = clock();
 	t.dst1(input);
+	//t.dct2(input);
 	t2 = clock();
 	printf("time = %f\n", (t2 - t1) / (double)(CLOCKS_PER_SEC));
 	system("pause");
 	t.getX_dst();
+	//t.getX_dct();
 	system("pause");
 	t.dst1_def(input);
+	//t.dct2_def(input);
 	system("pause");
 	return 0;
 }
