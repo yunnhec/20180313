@@ -82,7 +82,6 @@ void FFT::dct2(int Num){
 		Num /= 5;
 	}
 	p2 += 2;
-	cout << Num << endl;
 	if (Num == 1)
 	{
 		BitReverse_dct();
