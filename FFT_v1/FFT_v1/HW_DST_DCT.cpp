@@ -1,4 +1,4 @@
-// FFT_v1.cpp : ©w¸q¥D±±¥xÀ³¥Îµ{¦¡ªº¶i¤JÂI¡C
+// FFT_v1.cpp : å®šç¾©ä¸»æ§å°æ‡‰ç”¨ç¨‹å¼çš„é€²å…¥é»ã€‚
 //
 
 #include "stdafx.h"
@@ -410,17 +410,16 @@ int main()
 	cout << "N = ";
 	cin >> input;
 	t1 = clock();
-	//t.dst1(input);
-	t.dct2(input);
+	t.dst1(input);
+	//t.dct2(input);
 	t2 = clock();
 	printf("time = %f\n", (t2 - t1) / (double)(CLOCKS_PER_SEC));
 	system("pause");
-	//t.getX_dst();
-	t.getX_dct();
+	t.getX_dst();
+	//t.getX_dct();
 	system("pause");
-	//t.dst1_def(input);
-	t.dct2_def(input);
+	t.dst1_def(input);
+	//t.dct2_def(input);
 	system("pause");
 	return 0;
 }
-
