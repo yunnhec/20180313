@@ -54,7 +54,7 @@ int main()
 				}
 				if(i==n) break;
 			}
-			if(w<p)//redundant judgement
+			if(w<p)
 			{
 				printf("Find!\n");
 				break;
