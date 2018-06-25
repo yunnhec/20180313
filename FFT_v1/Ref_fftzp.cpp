@@ -6,14 +6,14 @@ int main()
 	int i, j, k, a, b, m, n, p, w, Iter_Max = 1000;
 	int *x, *X, *y, *Y, *z, *Z;
 	srand(time(NULL));
-	n = 8;
+	n = 8; //4位數*4位數
 	x = (int *) malloc(n*sizeof(int));
 	X = (int *) malloc(n*sizeof(int));
 	y = (int *) malloc(n*sizeof(int));
 	Y = (int *) malloc(n*sizeof(int));
 	z = (int *) malloc(n*sizeof(int));
 	Z = (int *) malloc(n*sizeof(int));
-	for(i=0;i<n;++i) 
+	for(i=0;i<n;++i) //數字倒序 ex:1234={4,3,2,1}
 	{
 		if(i<n/2) 
 		{
@@ -41,7 +41,7 @@ int main()
 	
 	for(k=1;k<=Iter_Max;++k)
 	{
-		if(is_prime(n*k+1)&&n*k+1>81*n/2) 
+		if(is_prime(n*k+1)&&n*k+1>81*n/2) //find a prime such that p=2n*k+1 and p>81n
 		{
 			p = n*k+1;
 			for(w=2;w<p;++w)
@@ -54,7 +54,7 @@ int main()
 				}
 				if(i==n) break;
 			}
-			if(w<p)
+			if(w<p)//redundant judgement
 			{
 				printf("Find!\n");
 				break;
