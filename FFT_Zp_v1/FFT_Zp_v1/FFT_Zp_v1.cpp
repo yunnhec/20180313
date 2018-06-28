@@ -63,34 +63,27 @@ void FFT_v2::Multi(string in1, string in2){
 
 void FFT_v2::butterflyZp(){
 	int Wtmp = invWn; //determine fft or ifft
-	int k, p, q, r, s, t, c, m = 1;
-	int N = digit;//pow(2, p2)*pow(3, p3)*pow(5, p5);
-	int thetaN, theta;
-	int wt, w_N, w_2N, w_3N, w_4N, tmp1, tmp2, tmp3, tmp4;
+	int k, p, q, c, m = 1;
+	int wt, tmp1;
 	for (c = 0; c < p2; c++){
 		m *= 2;
-		w_N = Wtmp;
+		wt = Mod(pow(Wtmp, digit / m), P);
 		for (k = 0; k < m / 2; k++){
-			wt = Mod(pow(Wtmp, digit / m), P);
 			
-			for (p = 0; p < digit; p += m){
+			for (p = k; p < digit; p += m){
 				q = p + m / 2;
-				cout << endl << "c,k,p,m = " << c << " " << k << " " << p << " " << m << "\t N/m = " << digit / m << endl;
-				cout << "wt = a^" << digit / m << "\t w_N = a^" << p%m << endl;
-				// (Complex)tmp = (Complex)w * (Complex)X[q]
-				//tmp1 = Mod(wt*X[q],P);
-				tmp1 = X[q];
-				// (Complex)X[q] = (Complex)X[p] - (Complex)tmp
-				X[q] = Mod((X[p] + pow(wt, 2)*tmp1), P);
-				// (Complex)X[p] = (Complex)X[p] + (Complex)tmp
-				X[p] = Mod((X[p] + wt*tmp1), P);
+				cout <<endl<< "c,k,p,m = " << c << " " << k << " " << p << " " << m << "\t N/m = " << digit / m << endl;
+				cout << "wt = a^" << digit / m<<"\t wt = "<<wt<< endl;				
 
-				cout << "X = ";
-				for (i = 0; i < digit; i++)
-					cout << X[i] << " ";
-				cout << endl;
+				tmp1 =X[q];
+				X[q] = Mod((X[p] + pow(wt, k+m/2)*tmp1), P);
+				X[p] = Mod((X[p] + pow(wt,k)*tmp1), P);
+
+				cout << "X[" << q << "] = X[" << p << "] + wt^" << k + m / 2 << "*tmp = "<<X[q] << endl;
+				cout << "X[" << p << "] = X[" << p << "] + wt^" << k << "*tmp = " << X[p] << endl;
 			}
 		}
+		cout << "--------------------------" << endl;
 	}
 }
 
@@ -344,11 +337,11 @@ int main()
 	cin >> input1;
 	cout << "input 2= ";
 	cin >> input2;*/
-	input1 = "14"; 
-	input2 = "14";
+	input1 = "1234"; 
+	input2 = "1234";
 	test.Multi(input1, input2);
 	//system("pause");
-	//test.print();
+	test.print();
 	system("pause");
 	return 0;
 }
