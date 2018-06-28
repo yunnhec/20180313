@@ -49,8 +49,72 @@ void FFT_v2::conv(){
 
 void FFT_v2::fftZp(){
 	int Wtmp = invWn; //determine fft or ifft
-	int k, p, q, c, m = 1;
-	int wk,wt, tmp1;
+	int k, p, q, r, s, t, c, m = 1;
+	int wk, wt, tmp1, tmp2, tmp3, tmp4;
+	for (c = 0; c < p5; c++){
+		m *= 5;
+		wt = Mod(Power(Wtmp, digit / m, P), P);
+		for (k = 0; k < m / 5; k++){
+			for (p = k; p < digit; p += m){
+				q = p + m / 5;
+				r = q + m / 5;
+				s = r + m / 5;
+				t = s + m / 5;
+
+				tmp1 = X[q];
+				tmp2 = X[r];
+				tmp3 = X[s];
+				tmp4 = X[t];
+				X[p] = X[p] + Power(wt, k + 4 * m / 3, P)*tmp1 + Power(wt, k + 8 * m / 3, P)*tmp2 + Power(wt, k + 12 * m / 3, P)*tmp3 + Power(wt, k + 16 * m / 3, P)*tmp4;
+				X[t] = X[t] % P;
+				X[p] = X[p] + Power(wt, k + 3 * m / 3, P)*tmp1 + Power(wt, k + 6 * m / 3, P)*tmp2 + Power(wt, k + 9 * m / 3, P)*tmp3 + Power(wt, k + 12 * m / 3, P)*tmp4;
+				X[s] = X[s] % P;
+				X[r] = X[p] + Power(wt, k + 2 * m / 3, P)*tmp1 + Power(wt, k + 4 * m / 3, P)*tmp2 + Power(wt, k + 6 * m / 3, P)*tmp3 + Power(wt, k + 8 * m / 3, P)*tmp4;
+				X[r] = X[r] % P;
+				X[q] = X[p] + Power(wt, k + m / 3, P)*tmp1 + Power(wt, k + 2 * m / 3, P)*tmp2 + Power(wt, k + 3 * m / 3, P)*tmp3 + Power(wt, k + 4 * m / 3, P)*tmp4;
+				X[q] = X[q] % P;
+				X[p] = X[p] + Power(wt, k, P)*tmp1 + Power(wt, k, P)*tmp2 + Power(wt, k, P)*tmp3 + Power(wt, k, P)*tmp4;
+				X[p] = X[p] % P;
+
+				tmp1 = Y[q];
+				tmp2 = Y[r];
+				Y[r] = Y[p] + Power(wt, k + m / 3, P)*tmp1 + Power(wt, k + 2 * m / 3, P)*tmp2;
+				Y[r] = Y[r] % P;
+				Y[q] = Y[p] + Power(wt, k + 2 * m / 3, P)*tmp1 + Power(wt, k + 4 * m / 3, P)*tmp2;
+				Y[q] = Y[q] % P;
+				Y[p] = Y[p] + Power(wt, k, P)*tmp1 + Power(wt, k, P)*tmp2;
+				Y[p] = Y[p] % P;
+			}
+		}
+	}
+	for (c = 0; c < p3; c++){
+		m *= 3;
+		wt = Mod(Power(Wtmp, digit / m, P), P);
+		for (k = 0; k < m / 3; k++){
+			for (p = k; p < digit; p += m){
+				q = p + m / 3;
+				r = q + m / 3;
+
+				tmp1 = X[q];
+				tmp2 = X[r];
+				X[r] = X[p] + Power(wt, k + 2 * m / 3, P)*tmp1 + Power(wt, k + 4 * m / 3, P)*tmp2;
+				X[r] = X[r] % P;
+				X[q] = X[p] + Power(wt, k + 1 * m / 3, P)*tmp1 + Power(wt, k + 2 * m / 3, P)*tmp2;
+				X[q] = X[q] % P;
+				X[p] = X[p] + Power(wt, k, P)*tmp1 + Power(wt, k, P)*tmp2;
+				X[p] = X[p] % P;
+
+				tmp1 = Y[q];
+				tmp2 = Y[r];
+				Y[r] = Y[p] + Power(wt, k + 2 * m / 3, P)*tmp1 + Power(wt, k + 4 * m / 3, P)*tmp2;
+				Y[r] = Y[r] % P;
+				Y[q] = Y[p] + Power(wt, k + 1 * m / 3, P)*tmp1 + Power(wt, k + 2 * m / 3, P)*tmp2;
+				Y[q] = Y[q] % P;
+				Y[p] = Y[p] + Power(wt, k, P)*tmp1 + Power(wt, k, P)*tmp2;
+				Y[p] = Y[p] % P;
+			}
+		}
+	}
 	for (c = 0; c < p2; c++){
 		m *= 2;
 		wt = Mod(Power(Wtmp, digit / m, P), P);
@@ -76,9 +140,28 @@ void FFT_v2::fftZp(){
 
 void FFT_v2::ifftZp(){
 	int Wtmp = Wn; //determine fft or ifft
-	int k, p, q, c, m = 2;
-	int wk, wt, tmp1;
+	int k, p, q, r, s, t, c, m = 1;
+	int wk, wt, tmp1, tmp2;
+	for (c = 0; c < p3; c++){
+		m *= 3;
+		wt = Mod(Power(Wtmp, digit / m, P), P);
+		for (k = 0; k < m / 3; k++){
+			for (p = k; p < digit; p += m){
+				q = p + m / 3;
+				r = q + m / 3;
+				tmp1 = Z[q];
+				tmp2 = Z[r];
+				Z[r] = Z[p] + Power(wt, k + 2*m / 3, P)*tmp1 + Power(wt, k + 4 * m / 3, P)*tmp2;
+				Z[r] = Z[r] % P;
+				Z[q] = Z[p] + Power(wt, k + 1 * m / 3, P)*tmp1 + Power(wt, k + 2 * m / 3, P)*tmp2;
+				Z[q] = Z[q] % P;
+				Z[p] = Z[p] + Power(wt, k, P)*tmp1 + Power(wt, k, P)*tmp2;
+				Z[p] = Z[p] % P;
+			}
+		}
+	}
 	for (c = 0; c < p2; c++){
+		m *= 2;
 		wt = Mod(Power(Wtmp, digit / m, P), P);
 		for (k = 0; k < m / 2; k++){
 			for (p = k; p < digit; p += m){
@@ -90,7 +173,6 @@ void FFT_v2::ifftZp(){
 				Z[p] = Z[p] % P;
 			}
 		}
-		m *= 2;
 	}
 	for (i = 0; i < digit; i++){
 		while (Z[i] % digit != 0){
@@ -160,11 +242,16 @@ void FFT_v2::BitReverse2(string n1,string n2){
 	//ini_Array();
 	L1 = n1.length();
 	L2 = n2.length();
-	digit = L1 + L2;
-	if (digit % 2 != 0){
+	/*digit = L1 + L2;
+	while (digit % 2 != 0){
 		if (digit % 3 != 0 && digit % 5 != 0) //if 2,3,5 are not factor of digit, then digit++
 			digit++;
+	}*/
+	digit = 2;
+	while (digit<L1+L2){
+		digit *= 2;
 	}
+	cout<<n1<<" * "<<n2 <<",digit = "<< digit<<endl;
 	X = new int[digit];
 	Y = new int[digit];
 	T = new int[digit];
@@ -261,9 +348,12 @@ int FFT_v2::Mod(int x, int prime) {
 
 int FFT_v2::Power(int num, int power,int prime){
 	int t = 1;
+	while (power>digit){
+		power-=digit;
+	}
 	if (power == 0)
 		return 1;
-	else{
+	else{		
 		t = num;
 		for (int j = 1; j < power; j++){
 			t = t*num;
@@ -274,7 +364,7 @@ int FFT_v2::Power(int num, int power,int prime){
 }
 
 void FFT_v2::print(){
-	/*cout << "X = ";
+	cout << "X = ";
 	for (i = 0; i < digit; i++){
 		cout << X[i] << " ";
 	}
@@ -285,7 +375,8 @@ void FFT_v2::print(){
 	cout << endl << "Z = ";
 	for (i = 0; i < digit; i++){
 		cout << Z[i] << " ";
-	}*/
+	}
+	cout << endl;
 	cout << "iFFT(X*Y) = ";
 	for (i = 0; i < digit; i++){
 		cout << T[i] << " ";
@@ -303,9 +394,15 @@ void FFT_v2::mulans(){
 		T[i + 1] += T[i] / 10;
 		T[i] = T[i] % 10;
 	}
-	for (i = digit - 1; i >= 0; i--)
+	int tmp = digit - 1;
+	for (i = 1; i < digit; i++){
+		if (T[digit - i] == 0)
+			tmp--;
+		else break;
+	}
+	for (i = tmp; i >= 0; i--)
 	{
-		cout << T[i];
+			cout << T[i];
 	}
 	cout << endl;
 }
@@ -314,11 +411,13 @@ int main()
 {
 	FFT_v2 test;
 	string input1, input2;
-	cout << "digit of number must be radix-2" << endl;
+	/*cout << "digit of number must be radix-2" << endl;
 	cout << "X = ";
 	cin >> input1;
 	cout << "Y = ";
-	cin >> input2;
+	cin >> input2;*/
+	input1 = "923466";
+	input2 = "568";
 	test.Multi(input1, input2);
 	test.print();
 	system("pause");
