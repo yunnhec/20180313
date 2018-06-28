@@ -49,10 +49,9 @@ void FFT_v2::conv(){
 
 void FFT_v2::fftZp(){
 	int Wtmp = invWn; //determine fft or ifft
-	int k, p, q, c, m = 1;
+	int k, p, q, c, m = 2;
 	int wk,wt, tmp1;
 	for (c = 0; c < p2; c++){
-		m *= 2;
 		wt = Mod(Power(Wtmp, digit / m, P), P);
 		for (k = 0; k < m / 2; k++){
 			for (p = k; p < digit; p += m){
@@ -71,6 +70,7 @@ void FFT_v2::fftZp(){
 				Y[p] = Y[p] % P;
 			}
 		}
+		m *= 2;
 	}
 }
 
