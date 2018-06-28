@@ -1,4 +1,4 @@
-// FFT_Zp_v1.cpp : 定義主控台應用程式的進入點。
+// FFT_Zp_v2.cpp : 定義主控台應用程式的進入點。
 //
 
 #include "stdafx.h"
@@ -13,7 +13,7 @@ using namespace std;
 class FFT_v2{
 private:
 	int i, L1, L2, digit, Iter_Max = 1000;
-	int result = 0, P, Wn = 1, invWn = 1, p2 = 0, p3 = 0, p5 = 0;
+	int result = 0, P, Wn = 1, invWn = 1, p2 = 0;
 	int *X, *Y, *T, *Z, *bitArray;
 	void find_wn();
 	void BitReverse2(string, string);
@@ -22,7 +22,6 @@ private:
 	void ifftZp();
 	void conv(); //convert string elements to numbers
 	bool isPrime(int); //return true if input number is a prime
-	void fact(int); //factorization of digit
 	int Mod(int, int);
 	int Power(int, int, int);
 public:
@@ -49,72 +48,9 @@ void FFT_v2::conv(){
 
 void FFT_v2::fftZp(){
 	int Wtmp = invWn; //determine fft or ifft
-	int k, p, q, r, s, t, c, m = 1;
-	int wk, wt, tmp1, tmp2, tmp3, tmp4;
-	for (c = 0; c < p5; c++){
-		m *= 5;
-		wt = Mod(Power(Wtmp, digit / m, P), P);
-		for (k = 0; k < m / 5; k++){
-			for (p = k; p < digit; p += m){
-				q = p + m / 5;
-				r = q + m / 5;
-				s = r + m / 5;
-				t = s + m / 5;
+	int k, p, q, c, m = 1;
+	int wk, wt, tmp1;
 
-				tmp1 = X[q];
-				tmp2 = X[r];
-				tmp3 = X[s];
-				tmp4 = X[t];
-				X[p] = X[p] + Power(wt, k + 4 * m / 3, P)*tmp1 + Power(wt, k + 8 * m / 3, P)*tmp2 + Power(wt, k + 12 * m / 3, P)*tmp3 + Power(wt, k + 16 * m / 3, P)*tmp4;
-				X[t] = X[t] % P;
-				X[p] = X[p] + Power(wt, k + 3 * m / 3, P)*tmp1 + Power(wt, k + 6 * m / 3, P)*tmp2 + Power(wt, k + 9 * m / 3, P)*tmp3 + Power(wt, k + 12 * m / 3, P)*tmp4;
-				X[s] = X[s] % P;
-				X[r] = X[p] + Power(wt, k + 2 * m / 3, P)*tmp1 + Power(wt, k + 4 * m / 3, P)*tmp2 + Power(wt, k + 6 * m / 3, P)*tmp3 + Power(wt, k + 8 * m / 3, P)*tmp4;
-				X[r] = X[r] % P;
-				X[q] = X[p] + Power(wt, k + m / 3, P)*tmp1 + Power(wt, k + 2 * m / 3, P)*tmp2 + Power(wt, k + 3 * m / 3, P)*tmp3 + Power(wt, k + 4 * m / 3, P)*tmp4;
-				X[q] = X[q] % P;
-				X[p] = X[p] + Power(wt, k, P)*tmp1 + Power(wt, k, P)*tmp2 + Power(wt, k, P)*tmp3 + Power(wt, k, P)*tmp4;
-				X[p] = X[p] % P;
-
-				tmp1 = Y[q];
-				tmp2 = Y[r];
-				Y[r] = Y[p] + Power(wt, k + m / 3, P)*tmp1 + Power(wt, k + 2 * m / 3, P)*tmp2;
-				Y[r] = Y[r] % P;
-				Y[q] = Y[p] + Power(wt, k + 2 * m / 3, P)*tmp1 + Power(wt, k + 4 * m / 3, P)*tmp2;
-				Y[q] = Y[q] % P;
-				Y[p] = Y[p] + Power(wt, k, P)*tmp1 + Power(wt, k, P)*tmp2;
-				Y[p] = Y[p] % P;
-			}
-		}
-	}
-	for (c = 0; c < p3; c++){
-		m *= 3;
-		wt = Mod(Power(Wtmp, digit / m, P), P);
-		for (k = 0; k < m / 3; k++){
-			for (p = k; p < digit; p += m){
-				q = p + m / 3;
-				r = q + m / 3;
-
-				tmp1 = X[q];
-				tmp2 = X[r];
-				X[r] = X[p] + Power(wt, k + 2 * m / 3, P)*tmp1 + Power(wt, k + 4 * m / 3, P)*tmp2;
-				X[r] = X[r] % P;
-				X[q] = X[p] + Power(wt, k + 1 * m / 3, P)*tmp1 + Power(wt, k + 2 * m / 3, P)*tmp2;
-				X[q] = X[q] % P;
-				X[p] = X[p] + Power(wt, k, P)*tmp1 + Power(wt, k, P)*tmp2;
-				X[p] = X[p] % P;
-
-				tmp1 = Y[q];
-				tmp2 = Y[r];
-				Y[r] = Y[p] + Power(wt, k + 2 * m / 3, P)*tmp1 + Power(wt, k + 4 * m / 3, P)*tmp2;
-				Y[r] = Y[r] % P;
-				Y[q] = Y[p] + Power(wt, k + 1 * m / 3, P)*tmp1 + Power(wt, k + 2 * m / 3, P)*tmp2;
-				Y[q] = Y[q] % P;
-				Y[p] = Y[p] + Power(wt, k, P)*tmp1 + Power(wt, k, P)*tmp2;
-				Y[p] = Y[p] % P;
-			}
-		}
-	}
 	for (c = 0; c < p2; c++){
 		m *= 2;
 		wt = Mod(Power(Wtmp, digit / m, P), P);
@@ -140,26 +76,8 @@ void FFT_v2::fftZp(){
 
 void FFT_v2::ifftZp(){
 	int Wtmp = Wn; //determine fft or ifft
-	int k, p, q, r, s, t, c, m = 1;
-	int wk, wt, tmp1, tmp2;
-	for (c = 0; c < p3; c++){
-		m *= 3;
-		wt = Mod(Power(Wtmp, digit / m, P), P);
-		for (k = 0; k < m / 3; k++){
-			for (p = k; p < digit; p += m){
-				q = p + m / 3;
-				r = q + m / 3;
-				tmp1 = Z[q];
-				tmp2 = Z[r];
-				Z[r] = Z[p] + Power(wt, k + 2 * m / 3, P)*tmp1 + Power(wt, k + 4 * m / 3, P)*tmp2;
-				Z[r] = Z[r] % P;
-				Z[q] = Z[p] + Power(wt, k + 1 * m / 3, P)*tmp1 + Power(wt, k + 2 * m / 3, P)*tmp2;
-				Z[q] = Z[q] % P;
-				Z[p] = Z[p] + Power(wt, k, P)*tmp1 + Power(wt, k, P)*tmp2;
-				Z[p] = Z[p] % P;
-			}
-		}
-	}
+	int k, p, q, c, m = 1;
+	int wk, wt, tmp1;
 	for (c = 0; c < p2; c++){
 		m *= 2;
 		wt = Mod(Power(Wtmp, digit / m, P), P);
@@ -189,7 +107,7 @@ void FFT_v2::multi(){
 	}
 	//bit reverse of z (z to Z)
 	int m, p, q, k, c = 1;
-	int sum = p2 + p3 + p5;
+	int sum = p2;
 	m = digit / (bitArray[sum - c] + 1);
 	q = m;
 	Z[0] = T[0];
@@ -239,17 +157,13 @@ void FFT_v2::find_wn(){
 }
 
 void FFT_v2::BitReverse2(string n1, string n2){
-	//ini_Array();
 	L1 = n1.length();
 	L2 = n2.length();
-	/*digit = L1 + L2;
-	while (digit % 2 != 0){
-	if (digit % 3 != 0 && digit % 5 != 0) //if 2,3,5 are not factor of digit, then digit++
-	digit++;
-	}*/
 	digit = 2;
+	p2 = 1;
 	while (digit<L1 + L2){
 		digit *= 2;
+		p2++;
 	}
 	cout << n1 << " * " << n2 << ",digit = " << digit << endl;
 	X = new int[digit];
@@ -258,20 +172,13 @@ void FFT_v2::BitReverse2(string n1, string n2){
 	Z = new int[digit];
 
 	//factorization of digit
-	fact(digit);
-	int sizen = pow(2, p2)*pow(3, p3)*pow(5, p5);
-	bitArray = new int[p2 + p3 + p5];
+	bitArray = new int[p2];
 	for (i = 0; i < p2; i++)
 		bitArray[i] = 1;
-	for (i = 0; i < p3; i++)
-		bitArray[i + p2] = 2;
-	for (i = 0; i < p5; i++)
-		bitArray[i + p2 + p3] = 4;
-
 
 	//BitReverse of 2,3,5
 	int m, p, q, k, c = 1;
-	int sum = p2 + p3 + p5;
+	int sum = p2;
 	m = digit / (bitArray[sum - c] + 1);
 	q = m;
 	X[0] = n1[L1 - 1] - 48;
@@ -313,21 +220,6 @@ void FFT_v2::BitReverse2(string n1, string n2){
 	}
 	cout << endl;
 #endif
-}
-
-void FFT_v2::fact(int Num){
-	while (Num % 2 == 0){
-		p2++;
-		Num /= 2;
-	}
-	while (Num % 3 == 0){
-		p3++;
-		Num /= 3;
-	}
-	while (Num % 5 == 0){
-		p5++;
-		Num /= 5;
-	}
 }
 
 bool FFT_v2::isPrime(int number){
@@ -424,3 +316,4 @@ int main()
 	system("pause");
 	return 0;
 }
+
