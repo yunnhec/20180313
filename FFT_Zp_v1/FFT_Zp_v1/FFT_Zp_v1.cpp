@@ -63,13 +63,11 @@ void FFT_v2::Multi(string in1, string in2){
 
 void FFT_v2::butterflyZp(){
 	int Wtmp = invWn; //determine fft or ifft
-	int k, p, q, c, m = 1;
+	int k, p, q, c, m = 2;
 	int wt, tmp1;
 	for (c = 0; c < p2; c++){
-		m *= 2;
 		wt = Mod(pow(Wtmp, digit / m), P);
 		for (k = 0; k < m / 2; k++){
-			
 			for (p = k; p < digit; p += m){
 				q = p + m / 2;
 				cout <<endl<< "c,k,p,m = " << c << " " << k << " " << p << " " << m << "\t N/m = " << digit / m << endl;
@@ -77,12 +75,16 @@ void FFT_v2::butterflyZp(){
 
 				tmp1 =X[q];
 				X[q] = Mod((X[p] + pow(wt, k+m/2)*tmp1), P);
+				//X[q] = X[p] + pow(wt, k + m / 2)*tmp1;
+				//X[q] = X[q] % P;
 				X[p] = Mod((X[p] + pow(wt,k)*tmp1), P);
-
+				//X[p] = X[p] + pow(wt, k)*tmp1;
+				//X[p] = X[p] % P;
 				cout << "X[" << q << "] = X[" << p << "] + wt^" << k + m / 2 << "*tmp = "<<X[q] << endl;
 				cout << "X[" << p << "] = X[" << p << "] + wt^" << k << "*tmp = " << X[p] << endl;
 			}
 		}
+		m *= 2;
 		cout << "--------------------------" << endl;
 	}
 }
